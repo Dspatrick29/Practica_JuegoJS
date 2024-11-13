@@ -1,0 +1,14 @@
+#miCanvas {
+    border: solid 1px #020000;
+    margin: auto;
+}
+
+body {
+    background: rgb(169, 230, 240);
+    margin: 0;
+    padding: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}

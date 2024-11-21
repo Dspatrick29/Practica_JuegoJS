@@ -1,151 +1,133 @@
 window.onload = function () {
-    let canvas;
-    var suelo;
-    var yArriba = false;
-    var animacionActiva = true;
-    canvas = document.getElementById("miCanvas");
-    const ctx = canvas.getContext('2d');
 
+    var animacionActiva = false;
+
+
+    var fondo = new Image();
+    fondo.src = "./assets/img/img_background-day.png";
+
+    const canvas = document.getElementById('miCanvas');
+    const ctx = canvas.getContext('2d');
+    const gravedad = 0.8; // Gravedad 
 
     // Constructor de Pajaro
     function Pajaro() {
-        this.r = 40;
-        this.resetearVariables();
-    }
-    
-    // Método para inicializar la posición del pájaro
-    Pajaro.prototype.resetearVariables = function () {
+        this.r = 30;
         this.x = 250;
-        this.y = 150;
-        this.velocidad = 0;  // Velocidad inicial
-        this.gravedad = 0.5;  // Fuerza de gravedad
-        this.salto = -10;  // Fuerza del salto (valor negativo para que suba)
-        this.velocidadMaxima = 1;  // Velocidad máxima al caer
-    };
+        this.y = 150; // Posición inicial del pájaro
+        this.salto = 6; // Cantidad de posiciones que sube al saltar
+        this.enSalto = false; // Controla si está en salto
+    }
+
+
+    Suelo.prototype.imagen = new Image();
+    Suelo.prototype.imagen.src = "./assets/img/img_base.png";
+    Suelo.prototype.audio = new Audio("./assets/sound/audio point.ogg");
+
+    // Definir las imágenes del pájaro
+    Pajaro.prototype.imagenSalto = new Image();
+    Pajaro.prototype.imagenSalto.src = "./assets/img/img_yellowbird-downflap.png";
+
+    Pajaro.prototype.imagenCaida = new Image();
+    Pajaro.prototype.imagenCaida.src = "./assets/img/img_yellowbird-upflap.png";
+
+    Pajaro.prototype.imagenIntermedia = new Image();
+    Pajaro.prototype.imagenIntermedia.src = "./assets/img/img_yellowbird-midflap.png";
+    // Inicializar la imagen actual del pájaro
+    Pajaro.prototype.imagen = Pajaro.prototype.imagenIntermedia;
+
+    //  Pajaro.prototype.audio = new Audio("./assets/sound/audio point.ogg");
+
 
     // Método para dibujar el pájaro
     Pajaro.prototype.dibujar = function () {
-        ctx.fillStyle = "orange";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
-        ctx.fill();
+        ctx.drawImage(this.imagen, this.x - this.r, this.y - this.r, this.r * 2, this.r * 2);
+
     };
 
-  
-    
-    // Método para dibujar el pájaro
-    Pajaro.prototype.dibujar = function () {
-        ctx.fillStyle = "orange";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
-        ctx.fill();
-    };
 
-    
     // Método para actualizar la posición del pájaro
     Pajaro.prototype.actualizar = function () {
-        // Si el usuario presiona para saltar
-        if (yArriba) {
-            this.velocidad = this.salto; // Reiniciar la velocidad al saltar
-            yArriba = false; // Desactivar el salto tras aplicarlo
+        if (this.enSalto) {
+            this.y -= this.salto; // Subir al saltar
         } else {
-            // Aplicar gravedad solo si no hay salto
-            this.velocidad += this.gravedad;
-
-            // Limitar la velocidad máxima de caída
-            if (this.velocidad > this.velocidadMaxima) {
-                this.velocidad = this.velocidadMaxima;
-            }
+            this.y += gravedad; // Aplicar gravedad constante
         }
 
-        // Actualizar la posición en función de la velocidad
-        this.y += this.velocidad;
-
+        // Limitar al borde superior del canvas
+        if (this.y - this.r < 0) {
+            this.y = this.r; // Ajustar la posición al borde superior
+        }
         // Limitar al borde inferior (suelo)
         if (this.y + this.r >= suelo.y) {
             this.y = suelo.y - this.r; // Ajustar la posición al borde
-            this.velocidad = 0; // Detener el movimiento
-            animacionActiva = false; // Detener la animación
+            animacionActiva = false;  // Detener la animación
             console.log("Colisión con el suelo");
         }
+
     };
 
 
-    // Crear el objeto su
-    suelo = new Suelo();
-    const pajaro = new Pajaro();
-
-    // Método para dibujar los elementos
-    function dibujar() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);  // Limpiar el canvas
-        suelo.dibujar();  // Dibujar el suelo
-        pajaro.dibujar();  // Dibujar el pájaro
-    }
-
-    // Constructor del suelo
+    // Clase Suelo
     function Suelo() {
         this.ancho = 1280;
         this.alto = 140;
         this.x = 0;
         this.y = 720 - this.alto;
-        this.dibujar = function () {
-            ctx.fillStyle = "#F5F5DC";
-            ctx.fillRect(this.x, this.y, this.ancho, this.alto);
-        };
+    }
+
+    Suelo.prototype.dibujar = function () {
+        ctx.fillStyle = "#F5F5DC";
+        ctx.drawImage(this.imagen, this.x, this.y, this.ancho, this.alto);
+    };
+
+    // Crear una instancia de Suelo y Pajaro
+    const suelo = new Suelo();
+    const pajaro = new Pajaro();
+    const obstaculo = new Obstaculo(canvas.width, canvas.height);
+    // Método para dibujar los elementos
+    function dibujar() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+        ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height - 140); // Dibujar el fondo
+        suelo.dibujar();  // Dibujar el suelo
+        pajaro.dibujar(); // Dibujar el pájaro
+        obstaculo.dibujar(ctx); // Dibujar el obstáculo
     }
 
     // Detectar eventos de teclado
     document.addEventListener("keydown", activaMovimiento, false);
-   // document.addEventListener("keyup", desactivaMovimiento, false);
-
+    document.addEventListener("keyup", desactivaMovimiento, false);
 
     function activaMovimiento(evt) {
-        switch (evt.keyCode) {
-            case 38:
-                yArriba = true;
-                break;
-            case 32:
-                yArriba = true;
-                break;
+        if ((evt.keyCode === 38 || evt.keyCode === 32) && !pajaro.enSalto) { // Flecha arriba o espacio
+            if (pajaro.y - pajaro.r > 0) { // Evitar salir del techo
+                pajaro.enSalto = true; // Iniciar el salto
+                pajaro.imagen = pajaro.imagenSalto; // Cambiar a la imagen de salto
+            }
         }
     }
-/*
+
+
     function desactivaMovimiento(evt) {
-        switch (evt.keyCode) {
-            case 38:
-                yArriba = false;
-                break;
-            case 32:
-                yArriba = false;
-                break;
+        if ((evt.keyCode === 38 || evt.keyCode === 32)) { // Flecha arriba o espacio
+            pajaro.imagen = pajaro.imagenIntermedia; // Cambiar a la imagen intermedia
+            pajaro.enSalto = false; // Detener el salto
+            pajaro.imagen = pajaro.imagenCaida; // Cambiar a la imagen de caída
         }
-    }*/
-// Iniciar la animación
-document.getElementById('botonInicio').addEventListener('click', function () {
-    animacionActiva = true;
-    const intervalo = setInterval(function () {
-        if (animacionActiva) {
-            pajaro.actualizar(); // Actualizar la posición del pájaro
-            dibujar(); // Dibujar los elementos
-        } else {
-            clearInterval(intervalo); // Detener la animación al chocar con el suelo
-        }
-    }, 1000 / 60); // 60 FPS
-});
+    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
+    // Iniciar la animación
+    document.getElementById('botonInicio').addEventListener('click', function () {
+        animacionActiva = true;
+        const intervalo = setInterval(function () {
+            if (animacionActiva) {
+                pajaro.actualizar(); // Actualizar la posición del pájaro
+                obstaculo.actualizar(5); // Actualizar la posición del obstáculo
+                dibujar();           // Dibujar los elementos
+            } else {
+                clearInterval(intervalo); // Detener la animación al chocar con el suelo
+            }
+        }, 1000 / 60); // 60 FPS
+    });
+};

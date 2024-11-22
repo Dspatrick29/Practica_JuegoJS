@@ -8,7 +8,7 @@ window.onload = function () {
 
     const canvas = document.getElementById('miCanvas');
     const ctx = canvas.getContext('2d');
-    const gravedad = 0.8; // Gravedad 
+    const gravedad = 1.4; // Gravedad 
 
     // Constructor de Pajaro
     function Pajaro() {
@@ -84,14 +84,52 @@ window.onload = function () {
     // Crear una instancia de Suelo y Pajaro
     const suelo = new Suelo();
     const pajaro = new Pajaro();
-    const obstaculo = new Obstaculo(canvas.width, canvas.height);
+
+    // Constante para el límite de borrado
+    const LIMITEBORRADO = -60;
+
+    // Array para almacenar los obstáculos
+    let columnas = [];
+    // Función para generar un nuevo obstáculo
+    function generarObstaculo(anchoCanvas, altoCanvas) {
+        columnas.push(new Obstaculo(anchoCanvas, altoCanvas));
+    }
+
+    // Inicializar el primer obstáculo
+    generarObstaculo(canvas.width, canvas.height);
+
+    // Función para actualizar y dibujar los obstáculos
+    function actualizarObstaculos(ctx, anchoCanvas, altoCanvas, velocidad) {
+        // Actualizar y dibujar cada obstáculo
+        for (let i = 0; i < columnas.length; i++) {
+            columnas[i].actualizar(velocidad);
+            columnas[i].dibujar(ctx);
+        }
+        // Log las coordenadas de la primera columna
+        if (columnas.length > 0) {
+            console.log(`Coordenadas de la columna[0]: x=${columnas[0].posicionX}, y=${columnas[0].posicionY}`);
+        }
+
+
+        // Eliminar obstáculos que han pasado el límite de borrado
+        columnas = columnas.filter(obstaculo => obstaculo.posicionX > LIMITEBORRADO);
+
+        // Generar un nuevo obstáculo si la primera columna ha pasado cierta posición
+        if (columnas.length > 0 && columnas[0].posicionX < 500 && !columnas[0].generadoNuevo) {
+            generarObstaculo(anchoCanvas, altoCanvas);
+            columnas[0].generadoNuevo = true; // Marcar que se ha generado un nuevo obstáculo
+        }
+    }
+
+
+
     // Método para dibujar los elementos
     function dibujar() {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
         ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height - 140); // Dibujar el fondo
         suelo.dibujar();  // Dibujar el suelo
         pajaro.dibujar(); // Dibujar el pájaro
-        obstaculo.dibujar(ctx); // Dibujar el obstáculo
+        actualizarObstaculos(ctx, canvas.width, canvas.height, 3.5); //Actualizar y dibujar los obstáculos
     }
 
     // Detectar eventos de teclado
@@ -123,11 +161,10 @@ window.onload = function () {
         const intervalo = setInterval(function () {
             if (animacionActiva) {
                 pajaro.actualizar(); // Actualizar la posición del pájaro
-                obstaculo.actualizar(5); // Actualizar la posición del obstáculo
                 dibujar();           // Dibujar los elementos
             } else {
                 clearInterval(intervalo); // Detener la animación al chocar con el suelo
             }
-        }, 1000 / 60); // 60 FPS
+        }, 1000 / 120); // 60 FPS
     });
 };

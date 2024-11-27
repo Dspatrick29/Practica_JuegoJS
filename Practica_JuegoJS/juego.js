@@ -8,8 +8,8 @@ window.onload = function () {
 
     const canvas = document.getElementById('miCanvas');
     const ctx = canvas.getContext('2d');
-    const gravedad = 1.4; // Gravedad 
-
+    const gravedad = 2; // Gravedad 
+    let marcador=0;
     // Constructor de Pajaro
     function Pajaro() {
         this.r = 30;
@@ -108,6 +108,7 @@ window.onload = function () {
         // Log las coordenadas de la primera columna
         if (columnas.length > 0) {
             console.log(`Coordenadas de la columna[0]: x=${columnas[0].posicionX}, y=${columnas[0].posicionY}`);
+            console.log(marcador);
         }
 
 
@@ -117,7 +118,11 @@ window.onload = function () {
         // Generar un nuevo obstáculo si la primera columna ha pasado cierta posición
         if (columnas.length > 0 && columnas[0].posicionX < 500 && !columnas[0].generadoNuevo) {
             generarObstaculo(anchoCanvas, altoCanvas);
+            
             columnas[0].generadoNuevo = true; // Marcar que se ha generado un nuevo obstáculo
+        }
+        if ( columnas[0].posicionX < 220 && columnas[0].posicionX > 219) {
+            marcador = marcador+1;
         }
     }
 

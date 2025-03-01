@@ -90,6 +90,8 @@ window.onload = function () {
                 sonidos.reproducirColision(); 
                 console.log("Colisión con un obstáculo");
                 perderVida();
+                this.y = 250; 
+                this.x = 250;
                 break; // Salir del bucle una vez que se detecta una colisión
                 // Sin el break, se seguirían detectando colisiones con otros obstáculos
             }

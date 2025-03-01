@@ -1,6 +1,15 @@
 #miCanvas {
-    border: solid 1px #020000;
+    border: groove 5px #020000;
     margin: auto;
+}
+
+.imagenCanvas{
+    background-image: url('./assets/img/imagenFondoCarga.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
 }
 
 body {
@@ -17,4 +26,49 @@ div {
     align-items: center;
     flex-direction: column;
     margin: 25px;
+}
+.botonInicio {
+    background-color: #dbcf4b;
+    border:ridge #020000;
+    color: rgb(0, 0, 0);
+    padding: 15px 32px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.botonInicio:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    border-color: #666666;
+    cursor: not-allowed;
+}
+.records {
+    background-color: #DFD996;
+    border:ridge #020000;
+    color: rgb(0, 0, 0);
+    padding: 15px 32px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: lighter;
+    margin: 4px 2px;
+}
+
+.recordsTitulo{
+    font-weight: 800;
+    font-size: 20px;
+    color: #460000;
+}
+
+.marcadorVidas {
+    font-size: 20px;
+    font-weight: 800;
+    color: #49A10F;
+    border:ridge #020000;
+    padding: 10px;
+    background-color: #DFD996;
 }

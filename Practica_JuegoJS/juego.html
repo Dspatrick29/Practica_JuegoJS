@@ -6,12 +6,24 @@
     <title>Flappy Bird</title>
     <script src="juego.js"></script>
     <script src="obstaculo.js"></script>
+    <script src="sonidos.js"></script>
     <link rel="stylesheet" type="text/css" href="juego.css" title="style" />
+    <link rel="icon" type="image/png" href="./assets/img/img_yellowbird-midflap.png">
 </head>
 
 <body>
-<button id="botonInicio">Empezar partida</button>
+<div>
+        <p>Marcador: <span id="marcador">0</span></p>
+        <p>Vidas: <span id="vidas">3</span></p>
+
+        <h3>Récords</h3>
+        <ul id="listaRecords"></ul></div>
+<div>
+
     <canvas id="miCanvas" width="1280" height="720" style="background-color: blue;"></canvas>
+</div>
+<div><button id="botonInicio">Empezar partida</button></div>
+
 </body>
 
 </html>

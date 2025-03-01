@@ -1,4 +1,3 @@
-// Description: Clase que representa un obstáculo en el juego.
 function Obstaculo(anchoCanvas, altoCanvas) {
     this.ancho = 50;
     this.alto = altoCanvas;
@@ -10,12 +9,6 @@ function Obstaculo(anchoCanvas, altoCanvas) {
 
 
 }
-
-    // Constante para el límite de borrado
-    const LIMITEBORRADO = -60;
-
-    let columnas = [];
-
     Obstaculo.prototype.parteSuperior = new Image();
     Obstaculo.prototype.parteSuperior.src = "./assets/img/img_pipe-greenSUP.png";
 

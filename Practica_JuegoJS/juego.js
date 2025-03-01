@@ -1,3 +1,4 @@
+
 window.onload = function () {
  
     var animacionActiva = false;
@@ -39,6 +40,8 @@ window.onload = function () {
     // Incluir el archivo de sonidos
     const sonidos = new Sonidos();
 
+    // Incluir el archivo de colisiones
+
     // Definir las imágenes del pájaro
     Pajaro.prototype.imagenSalto = new Image();
     Pajaro.prototype.imagenSalto.src = "./assets/img/img_yellowbird-downflap.png";
@@ -71,13 +74,25 @@ window.onload = function () {
         // Limitar al borde inferior (suelo)
         if (this.y + this.r >= suelo.y) {
             this.y = suelo.y - this.r; // Ajustar la posición al borde
-            animacionActiva = false;  // Detener la animación
-            sonidos.reproducirColision(); // Reproducir sonido de colisión
+            animacionActiva = false;  
+            sonidos.reproducirColision();
             console.log("Colisión con el suelo");
             perderVida();
             // Reiniciar la posición del pájaro para que no se quede en el suelo
             this.y = 250; 
             this.x = 250;
+        }
+
+        // Verificar colisiones con los obstáculos
+        for (let i = 0; i < columnas.length; i++) {
+            if (colisiona(this, columnas[i])) {
+                animacionActiva = false;  
+                sonidos.reproducirColision(); 
+                console.log("Colisión con un obstáculo");
+                perderVida();
+                break; // Salir del bucle una vez que se detecta una colisión
+                // Sin el break, se seguirían detectando colisiones con otros obstáculos
+            }
         }
     };
 

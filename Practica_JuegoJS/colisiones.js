@@ -1,7 +1,4 @@
 
-// La logica detras de las colisiones del juego Flappy Bird es bastante simple.
-// El juego tiene dos tipos de colisiones: una con el suelo y otra con los obstáculos.
-// Para detectar si el pájaro colisiona con el suelo, simplemente comprobamos si la posición y del pájaro es mayor que la altura del canvas.
 
 
 function colisiona(pajaro, obstaculo) {
